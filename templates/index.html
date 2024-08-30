@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Upload Image</h1>
+        <p class="instructions">
+            Please upload an image. After uploading, you will be asked to click on specific points within the image.
+            You will see a small prompt image that indicates where you need to click.
+            If a point does not exist in the image, you can skip it by pressing "Enter".
+            Once you've clicked all required points, a CSV file with the coordinates will be generated.
+        </p>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+        {% if error %}
+        <p id="error-message">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+
+</html>

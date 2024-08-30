@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Pitch Keypoint Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .click-point {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        #image-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #clickable-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .instructions img {
+            width: 33%;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="display-4">Football Pitch Keypoint Settings</h1>
+        <p class="lead">Click on the image at the specified point. If you wish to skip this point, press "Enter".</p>
+        <div id="image-wrapper" class="mt-4">
+            <form action="/click_image" method="post" id="click-form">
+                <img src="/static/images/uploaded_image.png" id="clickable-image" alt="Click Image"
+                    class="img-fluid rounded">
+                <input type="hidden" name="x" id="x">
+                <input type="hidden" name="y" id="y">
+                <input type="hidden" name="skip" id="skip" value="0">
+            </form>
+        </div>
+        <div class="instructions mt-4">
+            <img src="{{ prompt_image_path }}" alt="{{ point_name }}" id="prompt-image" class="img-thumbnail">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const form = document.getElementById('click-form');
+        const imageWrapper = document.getElementById('image-wrapper');
+        const image = document.getElementById('clickable-image');
+
+        image.addEventListener('click', function (event) {
+            const rect = image.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            document.getElementById('x').value = x;
+            document.getElementById('y').value = y;
+            document.getElementById('skip').value = "0";
+
+            const clickPoint = document.createElement('div');
+            clickPoint.className = 'click-point';
+            clickPoint.style.left = `${x}px`;
+            clickPoint.style.top = `${y}px`;
+            imageWrapper.appendChild(clickPoint);
+
+            form.submit();
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                document.getElementById('skip').value = "1";
+                form.submit();
+            }
+        });
+    </script>
+</body>
+
+</html>
